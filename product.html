@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uz" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKPUS — Kitob Tafsiloti va Xarid Qilish</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for interactive quantity & tabs -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        bookpus: {
+                            dark: '#0A0F1D',
+                            card: '#121C31',
+                            accent: '#6366F1',
+                            gold: '#F59E0B',
+                            emerald: '#10B981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bookpus-dark text-slate-100 font-sans antialiased selection:bg-bookpus-accent selection:text-white" x-data="productApp()">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-bookpus-dark/90 backdrop-blur-xl border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white font-serif font-bold text-2xl shadow-xl shadow-indigo-500/20">
+                    Bp
+                </div>
+                <div>
+                    <span class="font-serif text-2xl tracking-wider font-extrabold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">BOOKPUS</span>
+                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase font-mono">Product Details</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm">
+                <a href="index.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Bosh sahifa</a>
+                <a href="catalog.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Katalog</a>
+                <a href="product.html" class="text-bookpus-accent font-semibold transition-colors">Kitob Tafsiloti</a>
+                <a href="checkout.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Buyurtma</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="checkout.html" class="relative p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-bookpus-accent text-slate-300 hover:text-bookpus-accent transition-all">
+                    <i class="fa-solid fa-bag-shopping text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-bookpus-accent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center" x-text="cartCount">3</span>
+                </a>
+                <a href="https://t.me/9266928657" target="_blank" class="hidden sm:inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-lg">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Botga o'tish</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Product Section -->
+    <main class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Breadcrumbs -->
+        <div class="flex items-center space-x-2 text-xs text-slate-400 mb-8 font-mono">
+            <a href="index.html" class="hover:text-indigo-400">Bosh sahifa</a>
+            <span>/</span>
+            <a href="catalog.html" class="hover:text-indigo-400">Katalog</a>
+            <span>/</span>
+            <span class="text-indigo-400">Atom Odatlar</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            <!-- Book Cover Showcase (Left) -->
+            <div class="lg:col-span-5">
+                <div class="sticky top-32 space-y-4">
+                    <div class="relative h-[480px] rounded-3xl bg-gradient-to-br from-slate-900 to-bookpus-card border border-slate-800 flex items-center justify-center overflow-hidden p-8 shadow-2xl group">
+                        <div class="absolute inset-0 bg-indigo-500/10 blur-3xl opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative z-10 text-center space-y-4">
+                            <i class="fa-solid fa-book-open text-8xl text-indigo-400 drop-shadow-lg"></i>
+                            <div class="space-y-1">
+                                <span class="text-xs font-mono uppercase tracking-widest text-indigo-400">Bestseller</span>
+                                <h3 class="font-serif text-2xl font-bold">ATOM ODATLAR</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Info & Purchase Actions (Right) -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-3">
+                        <span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold font-mono">Psixologiya</span>
+                        <div class="flex items-center text-amber-400 text-xs space-x-1">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-slate-400 ml-1 font-mono">(4.9 / 128 sharh)</span>
+                        </div>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight">Atom Odatlar: Kichik o'zgarishlar va ulkan natijalar</h1>
+                    <p class="text-slate-400 text-base mt-3">Muallif: <strong class="text-white font-semibold">Jeyms Klir</strong></p>
+                </div>
+
+                <!-- Price Box -->
+                <div class="p-6 rounded-3xl bg-bookpus-card border border-slate-800 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 uppercase font-mono block">Kitob narxi:</span>
+                        <div class="flex items-baseline space-x-3 mt-1">
+                            <span class="text-3xl font-bold font-serif text-white">75,000 so'm</span>
+                            <span class="text-sm text-slate-500 line-through">95,000 so'm</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Omborda mavjud</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Short Description -->
+                <div class="space-y-3 text-slate-300 text-sm leading-relaxed">
+                    <p>
+                        "Atom odatlar" kitobi sizga yomon odatlardan qutulish va yaxshi odatlarni shakllantirish bo'yicha isbotlangan ilmiy strategiyalarni taqdim etadi. Har kuni o'zingizni 1% ga yaxshilab borish orqali bir yil ichida qanday qilib ulkan muvaffaqiyatlarga erishish mumkinligini o'rganing.
+                    </p>
+                </div>
+
+                <!-- Quantity & Add to Cart / Telegram Checkout -->
+                <div class="space-y-4 pt-4 border-t border-slate-800">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Soni:</span>
+                        <div class="flex items-center bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                            <button @click="quantity > 1 ? quantity-- : null" class="px-4 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">-</button>
+                            <span class="px-4 py-2.5 font-bold text-sm text-white" x-text="quantity"></span>
+                            <button @click="quantity++" class="px-4 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">+</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                        <button @click="addToCart()" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>Savatchaga qo'shish</span>
+                        </button>
+                        <a href="checkout.html" class="flex-1 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-600/30 transition-all flex items-center justify-center space-x-2 text-center">
+                            <i class="fa-brands fa-telegram"></i>
+                            <span>Telegram Orqali Sotib Olish</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Features list -->
+                <div class="grid grid-cols-2 gap-4 pt-6 border-t border-slate-800 text-xs text-slate-400">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-truck text-indigo-400"></i>
+                        <span>Toshkent bo'ylab 1 kunda yetkazish</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+                        <span>Original va sifatli nashr</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-bookpus-dark border-t border-slate-800 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 font-mono">
+            BOOKPUS Store &copy; 2026 | Telegram Bot ID: 9266928657
+        </div>
+    </footer>
+
+    <!-- Alpine Script -->
+    <script>
+        function productApp() {
+            return {
+                cartCount: 3,
+                quantity: 1,
+                addToCart() {
+                    this.cartCount += this.quantity;
+                    alert('Kitob muvaffaqiyatli savatchaga qo\'shildi!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

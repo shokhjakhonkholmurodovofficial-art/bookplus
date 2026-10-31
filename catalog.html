@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="uz" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOKPUS — Kitoblar Katalogi va Qidiruv</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for reactive filtering and cart -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        bookpus: {
+                            dark: '#0A0F1D',
+                            card: '#121C31',
+                            accent: '#6366F1',
+                            gold: '#F59E0B',
+                            emerald: '#10B981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bookpus-dark text-slate-100 font-sans antialiased selection:bg-bookpus-accent selection:text-white" x-data="catalogApp()">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-bookpus-dark/90 backdrop-blur-xl border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white font-serif font-bold text-2xl shadow-xl shadow-indigo-500/20">
+                    Bp
+                </div>
+                <div>
+                    <span class="font-serif text-2xl tracking-wider font-extrabold bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">BOOKPUS</span>
+                    <span class="block text-[10px] text-slate-400 tracking-widest uppercase font-mono">Catalog Section</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm">
+                <a href="index.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Bosh sahifa</a>
+                <a href="catalog.html" class="text-bookpus-accent font-semibold transition-colors">Katalog</a>
+                <a href="product.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Kitob Tafsiloti</a>
+                <a href="checkout.html" class="text-slate-300 hover:text-bookpus-accent transition-colors">Buyurtma</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <a href="checkout.html" class="relative p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-bookpus-accent text-slate-300 hover:text-bookpus-accent transition-all">
+                    <i class="fa-solid fa-bag-shopping text-sm"></i>
+                    <span class="absolute -top-1 -right-1 bg-bookpus-accent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center" x-text="cartCount">3</span>
+                </a>
+                <a href="https://t.me/9266928657" target="_blank" class="hidden sm:inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-lg">
+                    <i class="fa-brands fa-telegram"></i>
+                    <span>Botga o'tish</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Catalog Content -->
+    <main class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Breadcrumbs & Title -->
+        <div class="mb-8">
+            <div class="flex items-center space-x-2 text-xs text-slate-400 mb-2 font-mono">
+                <a href="index.html" class="hover:text-indigo-400">Bosh sahifa</a>
+                <span>/</span>
+                <span class="text-indigo-400">Katalog</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-serif font-bold">Barcha Kitoblar To'plami</h1>
+            <p class="text-slate-400 text-sm mt-1">O'zingizga kerakli adabiyotni tanlang va Telegram bot orqali buyurtma bering.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Filters Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <div class="p-6 rounded-3xl bg-bookpus-card border border-slate-800 space-y-6">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                        <h3 class="font-serif font-bold text-lg">Filtrlar</h3>
+                        <button @click="resetFilters()" class="text-xs text-indigo-400 hover:underline">Tozalash</button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Qidiruv</label>
+                        <div class="relative">
+                            <input type="text" x-model="searchQuery" placeholder="Kitob nomi yoki muallif..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-slate-200">
+                            <i class="fa-solid fa-magnifying-glass absolute right-4 top-3.5 text-slate-500 text-sm"></i>
+                        </div>
+                    </div>
+
+                    <!-- Categories Filter -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Kategoriyalar</label>
+                        <div class="space-y-2 text-sm">
+                            <template x-for="cat in categories">
+                                <label class="flex items-center space-x-3 cursor-pointer py-1 group">
+                                    <input type="radio" name="category" :value="cat.id" x-model="selectedCategory" class="accent-indigo-500 w-4 h-4">
+                                    <span class="text-slate-300 group-hover:text-indigo-400 transition-colors" x-text="cat.name"></span>
+                                </label>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Maksimal narx: <span class="text-indigo-400 font-bold" x-text="maxPrice.toLocaleString() + ' so\'m'"></span></label>
+                        <input type="range" min="30000" max="200000" step="10000" x-model="maxPrice" class="w-full accent-indigo-500 bg-slate-900">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Books Grid Area -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- Sorting Bar -->
+                <div class="p-4 rounded-2xl bg-bookpus-card border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span class="text-xs text-slate-400 font-mono">Topildi: <strong class="text-white" x-text="filteredBooks.length"></strong> ta kitob</span>
+                    <div class="flex items-center space-x-3 w-full sm:w-auto">
+                        <span class="text-xs text-slate-400 whitespace-nowrap">Saralash:</span>
+                        <select x-model="sortBy" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 w-full sm:w-auto">
+                            <option value="popular">Ommabopligi bo'yicha</option>
+                            <option value="price-low">Arzonroq</option>
+                            <option value="price-high">Qimmatroq</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-for="book in filteredBooks" :key="book.id">
+                        <div class="group bg-bookpus-card rounded-3xl border border-slate-800 p-5 flex flex-col justify-between hover:border-indigo-500/60 transition-all duration-300">
+                            <div>
+                                <div class="relative h-64 rounded-2xl bg-slate-900 overflow-hidden mb-4 flex items-center justify-center border border-slate-800">
+                                    <div class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-mono text-indigo-400 border border-indigo-500/30" x-text="book.categoryName"></div>
+                                    <i class="fa-solid fa-book-bookmark text-6xl text-indigo-500/30 group-hover:scale-110 transition-transform duration-500"></i>
+                                </div>
+                                <span class="text-[11px] font-mono text-indigo-400 uppercase tracking-widest" x-text="book.author"></span>
+                                <h3 class="font-serif font-bold text-lg text-white mt-1 group-hover:text-indigo-300 transition-colors" x-text="book.title"></h3>
+                            </div>
+                            
+                            <div class="pt-6 mt-4 border-t border-slate-800/80 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] text-slate-400 block font-mono">Narxi:</span>
+                                    <span class="font-bold text-base text-white" x-text="book.price.toLocaleString() + ' so\'m'"></span>
+                                </div>
+                                <a href="product.html" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md shadow-indigo-600/25 flex items-center space-x-1.5">
+                                    <span>Ko'rish</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-bookpus-dark border-t border-slate-800 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500 font-mono">
+            BOOKPUS Store &copy; 2026 | Telegram Bot ID: 9266928657
+        </div>
+    </footer>
+
+    <!-- Alpine State Script -->
+    <script>
+        function catalogApp() {
+            return {
+                cartCount: 3,
+                searchQuery: '',
+                selectedCategory: 'all',
+                maxPrice: 200000,
+                sortBy: 'popular',
+                categories: [
+                    { id: 'all', name: 'Barcha kategoriyalar' },
+                    { id: 'business', name: 'Biznes & Moliya' },
+                    { id: 'psychology', name: 'Psixologiya' },
+                    { id: 'it', name: 'Texnologiya & IT' },
+                    { id: 'fiction', name: 'Badiiy adabiyot' }
+                ],
+                books: [
+                    { id: 1, title: 'Atom Odatlar', author: 'Jeyms Klir', price: 75000, category: 'psychology', categoryName: 'Psixologiya' },
+                    { id: 2, title: 'Boy ota, kambag\'al ota', author: 'Robert Kiyosaki', price: 80000, category: 'business', categoryName: 'Biznes' },
+                    { id: 3, title: 'Clean Code (Toza kod)', author: 'Robert Martin', price: 145000, category: 'it', categoryName: 'IT' },
+                    { id: 4, title: 'Stiv Jobs', author: 'Uolter Ayzekson', price: 120000, category: 'business', categoryName: 'Biznes' },
+                    { id: 5, title: 'Ikki eshik orasi', author: 'O\'tkir Hoshimov', price: 65000, category: 'fiction', categoryName: 'Badiiy' },
+                    { id: 6, title: 'Hadddan tashqari aqlli bo\'lish', author: 'Francheska Gino', price: 90000, category: 'psychology', categoryName: 'Psixologiya' }
+                ],
+                resetFilters() {
+                    this.searchQuery = '';
+                    this.selectedCategory = 'all';
+                    this.maxPrice = 200000;
+                    this.sortBy = 'popular';
+                },
+                get filteredBooks() {
+                    let result = this.books.filter(book => {
+                        let matchesSearch = book.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || book.author.toLowerCase().includes(this.searchQuery.toLowerCase());
+                        let matchesCategory = this.selectedCategory === 'all' || book.category === this.selectedCategory;
+                        let matchesPrice = book.price <= this.maxPrice;
+                        return matchesSearch && matchesCategory && matchesPrice;
+                    });
+
+                    if (this.sortBy === 'price-low') {
+                        result.sort((a, b) => a.price - b.price);
+                    } else if (this.sortBy === 'price-high') {
+                        result.sort((a, b) => b.price - a.price);
+                    }
+                    return result;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
